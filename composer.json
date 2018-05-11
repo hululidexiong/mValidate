@@ -2,7 +2,7 @@
 	"name": "bbear/mvalidate",
 	"description": "mvalidate",
 	"type": "library",
-	"license": "MIT",
+	"license": "BSD",
 	"authors": [
 		{"name": "BBear", "email": "hululidexiong@163.com"}
 	],
