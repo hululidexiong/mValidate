@@ -2,7 +2,7 @@
 	"name": "bbear/mvalidate",
 	"description": "mvalidate",
 	"type": "library",
-	"license": "BSD",
+	"license": "BSD-3-Clause",
 	"authors": [
 		{"name": "BBear", "email": "hululidexiong@163.com"}
 	],
