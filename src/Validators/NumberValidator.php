@@ -1,9 +1,9 @@
 <?php
 
 namespace MValid\Validators;
-use MValid\Base\BaseStringHelper;
 use MValid\Base\Bear;
 use MValid\Base\ValidException;
+use MValid\Helpers\BaseStringHelper;
 use MValid\Validator;
 /**
  * NumberValidator validates that the attribute value is a number.

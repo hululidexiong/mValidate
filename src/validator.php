@@ -10,25 +10,45 @@ namespace MValid;
 
 
 use MValid\Base\Bear;
-use MValid\Base\Object;
+use MValid\Base\SObject;
 use MValid\Base\ValidException;
 
-class Validator extends Object{
+class Validator extends SObject{
     /**
      * @var array list of built-in validators (name => class or configuration)
      */
     public static $builtInValidators = [
-        'boolean' => 'yii\validators\BooleanValidator',
-        'default' => 'yii\validators\DefaultValueValidator',
-        'double' => 'yii\validators\NumberValidator',
+        'boolean' => 'MValid\Validators\BooleanValidator',
+        'number' => 'MValid\Validators\NumberValidator',
+        'required' => 'MValid\Validators\RequiredValidator',
+        'email' => 'MValid\Validators\EmailValidator',
+        'string' => 'MValid\Validators\StringValidator',
+
+        //'double' => 'yii\validators\NumberValidator',
         //'each' => 'yii\validators\EachValidator',
-        'email' => 'yii\validators\EmailValidator',
-        'exist' => 'yii\validators\ExistValidator',
-        'number' => 'yii\validators\NumberValidator',
-        'required' => 'yii\validators\RequiredValidator',
-        'safe' => 'yii\validators\SafeValidator',
-        'string' => 'yii\validators\StringValidator',
+        //'exist' => 'yii\validators\ExistValidator',
+        //'safe' => 'yii\validators\SafeValidator',
+        //'default' => 'yii\validators\DefaultValueValidator',
     ];
+
+    /**
+     * @var array|string attributes to be validated by this validator. For multiple attributes,
+     * please specify them as an array; for single attribute, you may use either a string or an array.
+     */
+    public $attributes = [];
+    /**
+     * @var string the user-defined error message. It may contain the following placeholders which
+     * will be replaced accordingly by the validator:
+     *
+     * - `{attribute}`: the label of the attribute being validated
+     * - `{value}`: the value of the attribute being validated
+     *
+     * Note that some validators may introduce other properties for error messages used when specific
+     * validation conditions are not met. Please refer to individual class API documentation for details
+     * about these properties. By convention, this property represents the primary error message
+     * used when the most important validation condition is not met.
+     */
+    public $message;
 
 
     public function validateAttributes($model, $attributes = null)
@@ -64,7 +84,7 @@ class Validator extends Object{
         }
     }
 
-    protected function validateValue( $value = null )
+    protected function validateValue( $value )
     {
         throw new ValidException( get_class($this) . ' does not support validateValue().');
     }
@@ -84,6 +104,9 @@ class Validator extends Object{
      */
     public static function createValidator($type, $model, $attributes, $params = [])
     {
+        if( $params ){
+
+        }
         $params['attributes'] = $attributes;
 
         if ($type instanceof \Closure || $model->hasMethod($type)) {
@@ -101,7 +124,8 @@ class Validator extends Object{
                 $params['class'] = $type;
             }
         }
-
+var_dump( $params );
+        var_dump( $type );
         return Bear::createObject($params);
     }
 
@@ -149,5 +173,14 @@ class Validator extends Object{
             $placeholders['{' . $name . '}'] = $value;
         }
         return ($placeholders === []) ? $message : strtr($message, $placeholders);
+    }
+
+    public function isEmpty($value)
+    {
+//        if ($this->isEmpty !== null) {
+//            return call_user_func($this->isEmpty, $value);
+//        } else {
+            return $value === null || $value === [] || $value === '';
+//        }
     }
 }

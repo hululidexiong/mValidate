@@ -1,6 +1,6 @@
 <?php
 
-namespace MValid\Base;
+namespace MValid\Helpers;
 
 class BaseStringHelper
 {

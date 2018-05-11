@@ -8,7 +8,7 @@
 
 namespace MValid\Base;
 
-class Object{
+class SObject{
 
     public $EntityAttributes;
 
@@ -63,8 +63,11 @@ class Object{
             return;
         }
 
+        var_dump( $this->EntityAttributes );
+        var_dump($name);
         if(is_array($this->EntityAttributes) && in_array($name , $this->EntityAttributes)){
             $this->$name = $value;
+            return;
         }
         if (method_exists($this, 'get' . $name)) {
             throw new ValidException('Setting read-only property: ' . get_class($this) . '::' . $name);

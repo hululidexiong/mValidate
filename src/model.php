@@ -12,10 +12,10 @@ namespace MValid;
 
 
 use MValid\Base\Bear;
-use MValid\Base\Object;
+use MValid\Base\SObject;
 use MValid\Base\ValidException;
 
-class Model extends Object{
+class Model extends SObject{
 
 
     /**
@@ -120,6 +120,9 @@ class Model extends Object{
             if ($rule instanceof Validator) {
                 $validators->append($rule);
             } elseif (is_array($rule) && isset($rule[0], $rule[1])) { // attributes, validator type
+                var_dump('+++++');
+                var_dump( $rule );
+                var_dump(  array_slice($rule, 2) );
                 $validator = Validator::createValidator($rule[1], $this , (array) $rule[0], array_slice($rule, 2));
                 $validators->append($validator);
             } else {
@@ -160,7 +163,7 @@ class Model extends Object{
     public function getActiveValidators($attribute = null)
     {
         $validators = [];
-        $scenario = $this->getScenario();
+        //$scenario = $this->getScenario();
         foreach ($this->getValidators() as $validator) {
             //if ($validator->isActive($scenario) && ($attribute === null || in_array($attribute, $validator->getAttributeNames(), true))) {
                 $validators[] = $validator;
@@ -189,7 +192,8 @@ class Model extends Object{
         if ($attributeNames === null) {
             $attributeNames = $this->activeAttributes();
         }
-
+        //######
+        var_dump( $this->getActiveValidators() );
         foreach ($this->getActiveValidators() as $validator) {
             $validator->validateAttributes($this, $attributeNames);
         }
@@ -335,6 +339,15 @@ class Model extends Object{
         return $names;
     }
 
+    public function getAttributes(){
+        $data = [];
+        foreach( $this as $key=>$val){
+            if( in_array( $key , $this->EntityAttributes )){
+                $data[$key] = $val;
+            }
+        }
+        return $data;
+    }
     public function setAttributes($values)
     {
         if (is_array($values)) {
@@ -410,10 +423,25 @@ class Model extends Object{
             if (!$property->isStatic()) {
                 $name = $property->getName();
                 $value = $property->getValue( new $Entity );
-                $data[$name] = $value['Default'];
+                $data[$name] = isset ($value['Default']) ? $value['Default'] : null ;
+
+                if( isset( $value['ValidateMode'] ) && is_array( $value['ValidateMode'] ) ){
+                    $param = array_slice( $value['ValidateMode'], 1);
+                    $this->_rules[] = array_merge([$name , $value['ValidateMode'][0]] , $param);
+//                    if( $param ){
+//                        $this->_rules[] = [$name , $value['ValidateMode'][0] , $param ];
+//                    }else{
+//                        $this->_rules[] = [$name , $value['ValidateMode'][0]];
+//                    }
+
+                }
+
             }
         }
         $this->EntityAttributes = array_keys( $data );
+        var_dump( $this->EntityAttributes );
+        var_dump( 'rules------------' );
+        var_dump( $this->_rules );
         $this->setAttributes($data);
         return $this;
     }
