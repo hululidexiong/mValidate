@@ -124,8 +124,8 @@ class Validator extends SObject{
                 $params['class'] = $type;
             }
         }
-var_dump( $params );
-        var_dump( $type );
+//var_dump( $params );
+//        var_dump( $type );
         return Bear::createObject($params);
     }
 

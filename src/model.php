@@ -120,9 +120,9 @@ class Model extends SObject{
             if ($rule instanceof Validator) {
                 $validators->append($rule);
             } elseif (is_array($rule) && isset($rule[0], $rule[1])) { // attributes, validator type
-                var_dump('+++++');
-                var_dump( $rule );
-                var_dump(  array_slice($rule, 2) );
+//                var_dump('+++++');
+//                var_dump( $rule );
+//                var_dump(  array_slice($rule, 2) );
                 $validator = Validator::createValidator($rule[1], $this , (array) $rule[0], array_slice($rule, 2));
                 $validators->append($validator);
             } else {
@@ -193,7 +193,7 @@ class Model extends SObject{
             $attributeNames = $this->activeAttributes();
         }
         //######
-        var_dump( $this->getActiveValidators() );
+        //var_dump( $this->getActiveValidators() );
         foreach ($this->getActiveValidators() as $validator) {
             $validator->validateAttributes($this, $attributeNames);
         }
@@ -396,18 +396,23 @@ class Model extends SObject{
      * @param array $data the data array to load, typically `$_POST` or `$_GET`.
      * @param string $formName the form name to use to load the data into the model.
      * If not set, [[formName()]] is used.
-     * @return bool whether `load()` found the expected form in `$data`.
+     *
+     * bool whether `load()` found the expected form in `$data`
+     * @return $this
      */
     public function load($data, $formName = null)
     {
         $scope = $formName === null ? $this->formName() : $formName;
         if ($scope === '' && !empty($data)) {
             $this->setAttributes($data);
-            return true;
+            return $this;
+            //return true;
         } elseif (isset($data[$scope])) {
             $this->setAttributes($data[$scope]);
-            return true;
+            return $this;
+            //return true;
         }
+        throw new ValidException(' load data is invalid! ');
         return false;
     }
 
@@ -439,9 +444,9 @@ class Model extends SObject{
             }
         }
         $this->EntityAttributes = array_keys( $data );
-        var_dump( $this->EntityAttributes );
-        var_dump( 'rules------------' );
-        var_dump( $this->_rules );
+//        var_dump( $this->EntityAttributes );
+//        var_dump( 'rules------------' );
+//        var_dump( $this->_rules );
         $this->setAttributes($data);
         return $this;
     }

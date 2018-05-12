@@ -63,8 +63,6 @@ class SObject{
             return;
         }
 
-        var_dump( $this->EntityAttributes );
-        var_dump($name);
         if(is_array($this->EntityAttributes) && in_array($name , $this->EntityAttributes)){
             $this->$name = $value;
             return;
