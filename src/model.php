@@ -50,6 +50,7 @@ class Model extends SObject{
 
     private $_rules=null;
 
+    public $_ignore=[];
     /**
      * note :
      * Returns the validation rules for attributes.
@@ -173,6 +174,11 @@ class Model extends SObject{
     }
 
 
+    public function ignore( $ignore ){
+        $this->_ignore = (array)$ignore;
+        return $this;
+    }
+
     public function validate($attributeNames = null, $clearErrors = true)
     {
         if ($clearErrors) {
@@ -198,6 +204,7 @@ class Model extends SObject{
             $validator->validateAttributes($this, $attributeNames);
         }
         //$this->afterValidate();
+        $this->_ignore = [];
 
         return !$this->hasErrors();
     }

@@ -65,6 +65,14 @@ class Validator extends SObject{
             $attributes = $this->getAttributeNames();
         }
 
+        if( $model->_ignore ){
+            foreach ($attributes as $index => $attribute) {
+                if( in_array( $attribute , (array)$model->_ignore ) ){
+                    array_splice( $attributes , $index , 1);
+                }
+            }
+        }
+
         foreach ($attributes as $attribute) {
 //            $skip = $this->skipOnError && $model->hasErrors($attribute)
 //                || $this->skipOnEmpty && $this->isEmpty($model->$attribute);
