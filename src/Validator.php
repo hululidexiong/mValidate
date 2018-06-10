@@ -18,11 +18,11 @@ class Validator extends SObject{
      * @var array list of built-in validators (name => class or configuration)
      */
     public static $builtInValidators = [
-        'boolean' => 'MValid\Validators\BooleanValidator',
-        'number' => 'MValid\Validators\NumberValidator',
-        'required' => 'MValid\Validators\RequiredValidator',
-        'email' => 'MValid\Validators\EmailValidator',
-        'string' => 'MValid\Validators\StringValidator',
+        'Boolean' => 'MValid\Validators\BooleanValidator',
+        'Number' => 'MValid\Validators\NumberValidator',
+        'Required' => 'MValid\Validators\RequiredValidator',
+        'Email' => 'MValid\Validators\EmailValidator',
+        'String' => 'MValid\Validators\StringValidator',
 
         //'double' => 'yii\validators\NumberValidator',
         //'each' => 'yii\validators\EachValidator',

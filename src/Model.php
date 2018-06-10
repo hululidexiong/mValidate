@@ -124,7 +124,7 @@ class Model extends SObject{
 //                var_dump('+++++');
 //                var_dump( $rule );
 //                var_dump(  array_slice($rule, 2) );
-                $validator = Validator::createValidator($rule[1], $this , (array) $rule[0], array_slice($rule, 2));
+                $validator = Validator::createValidator( ucfirst( $rule[1] ) , $this , (array) $rule[0], array_slice($rule, 2));
                 $validators->append($validator);
             } else {
                 throw new ValidException('Invalid validation rule: a rule must specify both attribute names and validator type.');
@@ -355,11 +355,13 @@ class Model extends SObject{
         }
         return $data;
     }
-    public function setAttributes($values)
+    public function setAttributes($values , $force = false )
     {
         if (is_array($values)) {
             foreach ($values as $name => $value) {
-                $this->$name = $value;
+                if( isset( $this->$name ) || $force ){
+                    $this->$name = $value;
+                }
             }
 //            $attributes = array_flip(  $this->attributes() );
 //            foreach ($values as $name => $value) {
@@ -454,7 +456,7 @@ class Model extends SObject{
 //        var_dump( $this->EntityAttributes );
 //        var_dump( 'rules------------' );
 //        var_dump( $this->_rules );
-        $this->setAttributes($data);
+        $this->setAttributes($data , true);
         return $this;
     }
 }
