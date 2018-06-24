@@ -346,10 +346,11 @@ class Model extends SObject{
         return $names;
     }
 
-    public function getAttributes(){
+    public function getAttributes( $isNull = true){
         $data = [];
         foreach( $this as $key=>$val){
-            if( in_array( $key , $this->EntityAttributes )){
+            $filter = $isNull ? true : !($val===null);
+            if( in_array( $key , $this->EntityAttributes ) && $filter ){
                 $data[$key] = $val;
             }
         }
