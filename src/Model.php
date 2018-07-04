@@ -94,7 +94,7 @@ class Model extends SObject{
         foreach ($this->getValidators() as $validator) {
             foreach ($names as $name) {
                 foreach ($validator->attributes as $attribute) {
-                        $scenarios[$name][$attribute] = true;
+                    $scenarios[$name][$attribute] = true;
                 }
             }
         }
@@ -167,7 +167,7 @@ class Model extends SObject{
         //$scenario = $this->getScenario();
         foreach ($this->getValidators() as $validator) {
             //if ($validator->isActive($scenario) && ($attribute === null || in_array($attribute, $validator->getAttributeNames(), true))) {
-                $validators[] = $validator;
+            $validators[] = $validator;
             //}
         }
         return $validators;
@@ -346,11 +346,10 @@ class Model extends SObject{
         return $names;
     }
 
-    public function getAttributes( $isNull = true){
+    public function getAttributes(){
         $data = [];
         foreach( $this as $key=>$val){
-            $filter = $isNull ? true : !($val===null);
-            if( in_array( $key , $this->EntityAttributes ) && $filter ){
+            if( in_array( $key , $this->EntityAttributes ) ){
                 $data[$key] = $val;
             }
         }
