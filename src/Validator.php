@@ -12,8 +12,10 @@ namespace MValid;
 use MValid\Base\Bear;
 use MValid\Base\SObject;
 use MValid\Base\ValidException;
+use MValid\Traits\AidaTrait;
 
 class Validator extends SObject{
+    use AidaTrait;
     /**
      * @var array list of built-in validators (name => class or configuration)
      */
@@ -183,12 +185,5 @@ class Validator extends SObject{
         return ($placeholders === []) ? $message : strtr($message, $placeholders);
     }
 
-    public function isEmpty($value)
-    {
-//        if ($this->isEmpty !== null) {
-//            return call_user_func($this->isEmpty, $value);
-//        } else {
-            return $value === null || $value === [] || $value === '';
-//        }
-    }
+
 }

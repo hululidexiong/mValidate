@@ -14,10 +14,11 @@ namespace MValid;
 use MValid\Base\Bear;
 use MValid\Base\SObject;
 use MValid\Base\ValidException;
+use MValid\Traits\AidaTrait;
 
 class Model extends SObject{
 
-
+    use AidaTrait;
     /**
      * The name of the default scenario.
      */
@@ -51,6 +52,11 @@ class Model extends SObject{
     private $_rules=null;
 
     public $_ignore=[];
+
+    /**
+     * @var \MedMy\Entity
+     */
+    protected $_entity=null;
     /**
      * note :
      * Returns the validation rules for attributes.
@@ -346,10 +352,36 @@ class Model extends SObject{
         return $names;
     }
 
-    public function getAttributes(){
+    public function getAttributes( $option = [] ){
+        $option = array_merge( $this->_entity->_option, $option);
+        $attr_strip = $option['get_attr_strip'];
+        $get_field = $option['get_field'];
+        if(!is_array( $attr_strip )){
+            $attr_strip = (array)$attr_strip;
+        }
+        if(!is_array( $get_field )){
+            $get_field = (array)$get_field;
+        }
+        $entityAttributes = $this->EntityAttributes;
+        if( $get_field ){
+            $entityAttributes = array_filter( $entityAttributes , function( $item ) use ($get_field){
+                return in_array( $item , $get_field);
+            });
+        }else{
+            foreach( $attr_strip as $item){
+                $k = array_search( $item , $entityAttributes);
+                if($k!==false){
+                    array_splice( $entityAttributes , $k ,1);
+                }
+            }
+        }
+
         $data = [];
         foreach( $this as $key=>$val){
-            if( in_array( $key , $this->EntityAttributes ) ){
+            if( $option['is_filter_null'] === true && $this->isEmpty( $val )){
+                continue;
+            }
+            if( in_array( $key , $entityAttributes ) ){
                 $data[$key] = $val;
             }
         }
@@ -433,10 +465,16 @@ class Model extends SObject{
     public function loadEntity( $Entity ){
         $class = new \ReflectionClass( $Entity );
         $data = [];
+        $this->_entity = new $Entity;
+        //TODO 临时在这里将保留属性过滤掉
+        $filter = [ '_option' ];
         foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
             if (!$property->isStatic()) {
                 $name = $property->getName();
-                $value = $property->getValue( new $Entity );
+                if( in_array( $name  , $filter)){
+                    continue;
+                }
+                $value = $property->getValue( $this->_entity );
                 $data[$name] = isset ($value['Default']) ? $value['Default'] : null ;
 
                 if( isset( $value['ValidateMode'] ) && is_array( $value['ValidateMode'] ) ){
@@ -452,7 +490,9 @@ class Model extends SObject{
 
             }
         }
+
         $this->EntityAttributes = array_keys( $data );
+
 //        var_dump( $this->EntityAttributes );
 //        var_dump( 'rules------------' );
 //        var_dump( $this->_rules );
