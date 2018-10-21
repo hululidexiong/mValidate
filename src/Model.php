@@ -361,7 +361,9 @@ class Model extends SObject{
                     $data[$key] = $val;
                 }
             }
-
+        }
+        if(empty($data)){
+            $data = $this->getAttributes();
         }
         return $data;
     }
