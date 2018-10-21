@@ -378,20 +378,47 @@ class Model extends SObject{
 
         $data = [];
         foreach( $this as $key=>$val){
-            if( $option['is_filter_null'] === true && $this->isEmpty( $val )){
-                continue;
+            //由于目前是和表单验证一起的 ， 所有如果存在表单中的属性无条件返回
+            $is_set = false;
+            if(method_exists($this->_entity , 'set_attr_strip')){
+                $set_attr_strip = (array)$this->_entity->set_attr_strip();
+                if($set_attr_strip){
+                    $is_set = in_array($key,$set_attr_strip);
+                }
             }
+            if(!$is_set){
+                if( $option['is_filter_null'] === true && $this->isEmpty( $val )){
+                    continue;
+                }
+            }
+
             if( in_array( $key , $entityAttributes ) ){
                 $data[$key] = $val;
             }
         }
         return $data;
     }
+
+    private function filter_set_attr( $name , $force = false ){
+        //$this->_entity->
+        $is_set = true;
+        if(method_exists($this->_entity , 'set_attr_strip')){
+            $set_attr_strip = (array)$this->_entity->set_attr_strip();
+            if($set_attr_strip){
+                $is_set = in_array($name,$set_attr_strip);
+            }
+        }
+        $is = ( ( isset($this->$name)  && $is_set ) || $force);
+        return $is;
+    }
+
     public function setAttributes($values , $force = false )
     {
         if (is_array($values)) {
             foreach ($values as $name => $value) {
-                if( isset( $this->$name ) || $force ){
+
+//                if( isset( $this->$name ) || $force ){
+                if( $this->filter_set_attr( $name ,$force ) ){
                     $this->$name = $value;
                 }
             }
