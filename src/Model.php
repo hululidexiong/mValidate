@@ -352,6 +352,20 @@ class Model extends SObject{
         return $names;
     }
 
+    public function getAttrWithForm(){
+        $data = [];
+        if(method_exists($this->_entity , 'set_attr_strip')){
+            $set_attr_strip = (array)$this->_entity->set_attr_strip();
+            foreach( $this as $key=>$val){
+                if(in_array($key , $set_attr_strip)){
+                    $data[$key] = $val;
+                }
+            }
+
+        }
+        return $data;
+    }
+
     public function getAttributes( $option = [] ){
         $option = array_merge( $this->_entity->_option, $option);
         $attr_strip = $option['get_attr_strip'];
